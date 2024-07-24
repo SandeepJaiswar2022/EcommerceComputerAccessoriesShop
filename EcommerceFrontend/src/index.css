@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.custom-color {
+    background-color: #111222;
+}
+
+.custom {
+    color: red;
+}
+
+.customHover:hover {
+    color: red;
+}
+
+.hover-div h3,
+.hover-div p {
+    transition: color 0.9s ease;
+}
+
+.hover-div:hover h3 {
+    color: red;
+}
+
+.hover-div:hover p {
+    color: yellow;
+}
+
+.btn-bg-color {
+    background-color: rgb(125, 16, 203);
+}
+
+.btn-bg-color-hover:hover {
+    background-color: rgb(151, 54, 219);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #2d3748;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4a5568;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #2d3748;
+}
+
+.avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: transform 0.4s ease-in-out;
+}
+
+.avatar:hover {
+    transform: scale(1.2);
+    background-color: red;
+    color: white
+}
