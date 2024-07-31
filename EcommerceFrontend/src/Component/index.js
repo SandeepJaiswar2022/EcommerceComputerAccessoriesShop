@@ -8,13 +8,13 @@ import Shop from "./Shop/Shop";
 import ViewProduct from "./ViewProduct/ViewProduct";
 import ViewCart from "./ViewCart/ViewCart";
 import Address from "./Address/Address";
-import AfterOrderPlaced from "./AfterOrderPlaced/AfterOrderPlaced";
 import MyOrders from "./MyOrders/MyOrders";
 import UserAvatar from "./UserAvatar/UserAvatar";
 import UserProfile from "./UserProfile/UserProfile";
 import CustomProduct from "./CustomProduct/CustomProduct";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import ProtectedRouteLoggedInOnly from "./ProtectedRoute/ProtectedRouteLoggedInOnly";
+import OrderSummaryPostPayment from "./OrderSummaryPostPayment/OrderSummaryPostPayment";
+import OrderSummaryPrePayment from "./OrderSummaryPrePayment/OrderSummaryPrePayment";
 
-
-export { Header, Footer, Contactus, Home, Carousel, ProductSlider, Shop, ViewProduct, ViewCart, Address, AfterOrderPlaced, MyOrders, UserAvatar, UserProfile, CustomProduct, ProtectedRoute, ProtectedRouteLoggedInOnly }
+export { Header, Footer, Contactus, Home, Carousel, ProductSlider, Shop, ViewProduct, ViewCart, Address, OrderSummaryPostPayment, MyOrders, UserAvatar, UserProfile, CustomProduct, ProtectedRoute, ProtectedRouteLoggedInOnly, OrderSummaryPrePayment }

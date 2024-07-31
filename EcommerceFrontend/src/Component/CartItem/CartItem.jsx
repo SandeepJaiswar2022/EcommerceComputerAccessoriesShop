@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { FaTrashAlt } from 'react-icons/fa';  // Trash icon for delete
-import { FaPlus, FaMinus, FaRupeeSign } from 'react-icons/fa'
+import { FaPlus, FaMinus, FaRupeeSign, FaTrashAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';

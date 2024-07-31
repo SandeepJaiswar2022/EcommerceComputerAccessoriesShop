@@ -14,12 +14,6 @@ public interface OrderService {
     public Order getOrderById(Integer orderId) throws OrderException;
     public List<Order> usersOrderHistory(Integer userId);
 
-    public Order placedOrder(Integer orderId) throws OrderException;
-    public Order confirmedOrder(Integer orderId) throws OrderException;
-    public Order shippedOrder(Integer orderId) throws OrderException;
-    public Order cancledOrder(Integer orderId) throws OrderException;
-    public Order deliveredOrder(Integer orderId) throws OrderException;
-
     public List<Order> getAllOrders();
     public void deleteOrder(Integer orderId) throws OrderException;
 }

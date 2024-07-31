@@ -7,6 +7,7 @@ import { getUserProfile, logout } from '../../State/Auth/AuthSlice';
 import { useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import UserAvatar from '../UserAvatar/UserAvatar';
+import CartIcon from '../CartIcon/CartIcon';
 
 
 
@@ -38,7 +39,7 @@ function Header() {
 
                         <Link onClick={handleLogout} className={`customHover font-bold text-white transition duration-300 ${auth.user?.firstname ? `` : `hidden`}`}>Logout</Link>
 
-                        <NavLink to={`/cart`} className={({ isActive }) => (` ${auth.user?.firstname ? `` : `hidden`} customHover text-2xl font-bold transition duration-300 ${isActive ? `custom` : `text-white`}`)}><FaShoppingCart /></NavLink>
+                        <NavLink to={`/cart`} className={({ isActive }) => (` ${auth.user?.firstname ? `` : `hidden`} text-2xl font-bold transition duration-300 ${isActive ? `custom` : `text-white`}`)}><CartIcon /></NavLink>
 
 
                         <NavLink to={`/myprofile`} className={({ isActive }) => (` ${auth.user?.firstname ? `` : `hidden`} hover:text-red-700 -m-1 text-2xl font-bold transition duration-300 ${isActive ? `text-red-700` : `text-white`}`)}><UserAvatar username={auth.user?.firstname} /></NavLink>
@@ -60,7 +61,7 @@ function Header() {
                     <NavLink onClick={handleLogout} className={` 
                         ${auth.user?.firstname ? `` : `hidden`} block w-1/6 py-2 px-4 text-sm text-white hover:text-red-700 transition duration-300`}>Logout</NavLink>
                     <NavLink to={`/cart`} className={({ isActive }) => (` 
-                        ${auth.user?.firstname ? `` : `hidden`} block w-1/6 py-2 px-4 text-lg hover:text-red-700 transition duration-300 ${isActive ? `text-red-700` : `text-white`}`)}><FaShoppingCart /></NavLink>
+                        ${auth.user?.firstname ? `` : `hidden`} block w-1/6 py-2 px-4 text-lg hover:text-red-700 transition duration-300 ${isActive ? `text-red-700` : `text-white`}`)}><CartIcon /></NavLink>
                     <NavLink to={`/myprofile`} className={({ isActive }) => (` 
                         ${auth.user?.firstname ? `` : `hidden`} block w-1/6 py-2 px-4 -mx-1 transition duration-300 ${isActive ? `text-red-700` : `text-white`}`)}><UserAvatar username={auth.user?.firstname} /></NavLink>
                 </div>

@@ -4,9 +4,18 @@ import ProductSlider from '../ProductSlider/ProductSlider';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { useDispatch, useSelector } from 'react-redux';
+import { getCartItems } from '../../State/CartItem/CartItemSlice';
 
 function Home() {
 
+  const dispatch = useDispatch();
+  const jwtToken = useSelector((state) => state.auth.jwtToken);
+  useEffect(() => {
+    if (jwtToken) {
+      dispatch(getCartItems(jwtToken));
+    }
+  }, [dispatch, jwtToken]);
   const settings = {
     dots: true,
     infinite: true,
@@ -21,12 +30,6 @@ function Home() {
       <Carousel />
       <ProductSlider rem={1} title={`TOP PRODUCTS`} />
       <ProductSlider rem={0} title={`BEST DEALS`} />
-      <div className='flex items-center justify-center gap-7' >
-        <Link to={`/address`} className='text-white font-bold text-xl hover:text-red-500' >Add Address</Link>
-        <Link to={`/orderPlaced`} className='text-white font-bold text-xl hover:text-red-500' >Order Placed</Link>
-        <Link to={`/myOrders`} className='text-white font-bold text-xl hover:text-red-500' >My Orders</Link>
-        {/* User Profile Drop Down List(1.My Profile 2.My Orders 3.LogOut) */}
-      </div>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import com.learning.Model.Address;
 import com.learning.Model.Order;
 import com.learning.Model.User;
 import com.learning.Repository.AddressRepo;
+import com.learning.Service.OrderItemService;
 import com.learning.Service.OrderService;
 import com.learning.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @CrossOrigin
 public class OrderController {
     private final OrderService orderService;
+    private final OrderItemService orderItemService;
     private final UserService userService;
     private final AddressRepo addressRepo;
 
@@ -40,6 +42,7 @@ public class OrderController {
         if(order == null) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+        System.out.println("\n\nGet user history of orders called\n\n");
         return ResponseEntity.ok(order);
     }
 
@@ -50,6 +53,7 @@ public class OrderController {
     ) throws UserException {
         User user = userService.findUserByJwtToken(authHeader);
         List<Order> orderList = orderService.usersOrderHistory(user.getId());
+        System.out.println("\n\nGet user history of orders called\n\n");
         return ResponseEntity.ok(orderList);
     }
 
@@ -67,49 +71,54 @@ public class OrderController {
     @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<?> getAllOrders(){
         List<Order> orderList = orderService.getAllOrders();
+        System.out.println("\n\nAdmin:Get All orders called\n\n");
         return ResponseEntity.ok(orderList);
     }
 
-    @PutMapping("/admin/order/confirmed/{orderId}")
+    @PutMapping("/admin/order/confirmed/{orderItemId}")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<?> confirmOrder(
-            @PathVariable Integer orderId
+            @PathVariable Integer orderItemId
             ) throws UserException, OrderException {
-        Order order = orderService.confirmedOrder(orderId);
-        return ResponseEntity.ok(order);
+        orderItemService.changeOrderItemStatus(orderItemId,"CONFIRMED");
+        System.out.println("\n\nChange OrderItem Status Confirmed called\n\n");
+        return ResponseEntity.ok("Order confirmed");
     }
 
-    @PutMapping("/admin/order/shipped/{orderId}")
+    @PutMapping("/admin/order/shipped/{orderItemId}")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<?> shipOrder(
-            @PathVariable Integer orderId
+            @PathVariable Integer orderItemId
     ) throws UserException, OrderException {
-        Order order = orderService.shippedOrder(orderId);
-        return ResponseEntity.ok(order);
+        orderItemService.changeOrderItemStatus(orderItemId,"SHIPPED");
+        System.out.println("\n\nChange OrderItem Status Shipped called\n\n");
+        return ResponseEntity.ok("Order shipped");
     }
 
-    @PutMapping("/admin/order/delivered/{orderId}")
+    @PutMapping("/admin/order/delivered/{orderItemId}")
     @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<?> deliverOrder(
-            @PathVariable Integer orderId
+            @PathVariable Integer orderItemId
     ) throws UserException, OrderException {
-        Order order = orderService.deliveredOrder(orderId);
-        return ResponseEntity.ok(order);
+        orderItemService.changeOrderItemStatus(orderItemId,"DELIVERED");
+        System.out.println("\n\nChange OrderItem Status Delivered called\n\n");
+        return ResponseEntity.ok("Order Delivered");
     }
 
-    @PutMapping("/admin/order/cancelled/{orderId}")
-    @PreAuthorize("hasAuthority('admin:update')")
+    @PutMapping("/order/{orderItemId}")
+    @PreAuthorize("hasAuthority('user:update')")
     public ResponseEntity<?> cancelOrder(
-            @PathVariable Integer orderId
+            @PathVariable Integer orderItemId
     ) throws UserException, OrderException {
-        Order order = orderService.cancledOrder(orderId);
-        return ResponseEntity.ok(order);
-    }
+        orderItemService.changeOrderItemStatus(orderItemId,"CANCELLED");
+        System.out.println("\n\nChange OrderItem Status Cancelled called\n\n");
+        return ResponseEntity.ok("Order Cancelled");    }
 
     @DeleteMapping("/admin/order/delete/{orderId}")
     public ResponseEntity<?> deleteOrderById(
             @PathVariable Integer orderId) throws OrderException {
         orderService.deleteOrder(orderId);
+        System.out.println("\n\nDelete Order by id called\n\n");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

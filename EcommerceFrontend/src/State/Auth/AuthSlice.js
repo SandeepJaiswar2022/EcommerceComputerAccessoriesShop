@@ -129,6 +129,7 @@ export const UserAuthentication = createSlice({
                 state.loading = false;
                 state.error = action.payload.message;
                 state.user = null;
+                state.error = null;
             })
     }
 });

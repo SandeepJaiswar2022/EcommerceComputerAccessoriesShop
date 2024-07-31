@@ -44,8 +44,6 @@ public class Order {
 
     private Double discount;
 
-    private String orderStatus;
-
     private Integer totalItem;
 
 }

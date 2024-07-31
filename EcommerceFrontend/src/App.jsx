@@ -1,10 +1,10 @@
-import { Address, AfterOrderPlaced, Contactus, Footer, Header, Home, MyOrders, ProtectedRoute, ProtectedRouteLoggedInOnly, Shop, UserProfile, ViewCart, ViewProduct } from './Component'
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
+import { Address, Contactus, Footer, Header, Home, MyOrders, OrderSummaryPostPayment, OrderSummaryPrePayment, ProtectedRoute, ProtectedRouteLoggedInOnly, Shop, UserProfile, ViewCart, ViewProduct } from './Component'
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom'
 import Layout from "./Layout"
 import { SignIn, SignUp } from './Auth'
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from './State/Auth/AuthSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getCartItems } from './State/CartItem/CartItemSlice';
 
 
@@ -20,6 +20,7 @@ function App() {
     }
   }, [dispatch, jwtToken]);
 
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<Layout />}>
@@ -27,8 +28,10 @@ function App() {
         <Route path="/contact" element={<Contactus />} />
         <Route path='/shop' element={<Shop />} />
         <Route path='/product/:productId' element={<ViewProduct />} />
-        <Route path='/orderPlaced' element={<AfterOrderPlaced />} />
-        <Route path='/myOrders' element={<MyOrders />} />
+        <Route path='/preordersummary' element={<OrderSummaryPrePayment />} />
+        <Route path='/address' element={<Address />} />
+        <Route path='/postordersummary' element={<OrderSummaryPostPayment />} />
+
         <Route
           path="/signup"
           element={
@@ -54,13 +57,21 @@ function App() {
           }
         />
         <Route
-          path='/address'
+          path="/myorders"
           element={
             <ProtectedRouteLoggedInOnly>
-              <Address />
+              <MyOrders />
             </ProtectedRouteLoggedInOnly>
           }
         />
+        {/* <Route
+          path='/address'
+          element={
+            <ProtectedRouteLoggedInOnly>
+              <Address setCanAccess={setCanAccess} />
+            </ProtectedRouteLoggedInOnly>
+          }
+        /> */}
         <Route
           path='/myprofile'
           element={
@@ -69,6 +80,14 @@ function App() {
             </ProtectedRouteLoggedInOnly>
           }
         />
+        {/* <Route
+          path='/ordersummary'
+          element={
+            <ProtectedRouteLoggedInOnly>
+              <UserProfile />
+            </ProtectedRouteLoggedInOnly>
+          }
+        /> */}
       </Route>
     )
   )

@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { deleteCartItem, getCartItems } from '../../State/CartItem/CartItemSlice';
 import CartItem from '../CartItem/CartItem';
-import { FaMinus, FaRupeeSign } from 'react-icons/fa'
+import { FaRupeeSign } from 'react-icons/fa'
 import { ToastContainer } from 'react-toastify';
 
 function ViewCart() {
@@ -11,13 +11,23 @@ function ViewCart() {
     const cartItemObj = useSelector(store => store.cartItem?.cartItems); //Obj
     const cartItems = cartItemObj?.cartItems; //Array
     const jwtToken = useSelector((state) => state.auth.jwtToken);
-    const [quantity, setTotalQuantity] = useState();
+    const navigateTo = useNavigate();
 
     useEffect(() => {
         if (jwtToken) {
             dispatch(getCartItems(jwtToken));
         }
     }, [dispatch, jwtToken]);
+
+    useEffect(() => {
+        localStorage.setItem('currentStep', '0');
+        console.log("In Carts : ", localStorage.getItem(`currentStep`));
+    }, [navigateTo]);
+
+    const goToShippingAddress = () => {
+        localStorage.setItem('currentStep', '1');
+        navigateTo(`/address`);
+    }
 
     const deleteCartItemHandler = useCallback(
         (productId) => {
@@ -58,49 +68,33 @@ function ViewCart() {
             {/* Pricing Details  */}
             <div className="lg:w-fit flex flex-col justify-center items-center bg-gray-800 h-fit p-8 rounded-lg sticky lg:top-16 md:static md:top-auto">
                 <h2 className="text-3xl font-bold text-indigo-500 mb-4">Price Details</h2>
-                {/* <div className="space-y-1">
-                    <div className="flex justify-between">
-                        <span className="text-lg font-bold text-gray-300">Price ({cartItemObj?.cartTotalQuantity} items) :</span>
-                        <div className="flex text-white justify-center items-center">
-                            <FaRupeeSign /><span className="font-bold text-lg">{cartItemObj?.cartTotalPrice}</span>
-                        </div>
-                    </div>
-                    <div className="flex justify-between">
-                        <span className="text-lg font-bold text-gray-300">Discount :</span>
-                        <div className='flex text-green-500 justify-center items-center'>-<FaRupeeSign /><span className="font-bold text-lg">{cartItemObj?.cartTotalDiscount}</span></div>
-                    </div>
-                    <div className="flex justify-between">
-                        <span className="text-lg font-bold text-gray-300">Delivery Charges :</span>
-                        <span className="font-bold text-lg text-yellow-500">FREE</span>
-                    </div>
-                </div> */}
-                <table class="min-w-full divide-y divide-gray-200">
+                <table className="min-w-full divide-y divide-gray-200">
 
-                    <tbody class="text-white divide-y divide-gray-200">
+                    <tbody className="text-white divide-y divide-gray-200">
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap"><span className="font-bold text-lg text-gray-300">Price ({cartItemObj?.cartTotalQuantity} items) :</span></td>
-                            <td align='right' class="px-6 py-4 whitespace-nowrap"><div className="flex text-white justify-center items-center">
+                            <td className="px-6 py-4 whitespace-nowrap"><span className="font-bold text-lg text-gray-300">Price ({cartItemObj?.cartTotalQuantity} items) :</span></td>
+                            <td align='right' className="px-6 py-4 whitespace-nowrap"><div className="flex text-white justify-center items-center">
                                 <FaRupeeSign /><span className="font-bold text-lg">{cartItemObj?.cartTotalPrice}</span>
                             </div></td>
                         </tr>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap"><span className="text-lg font-bold text-gray-300">Discount :</span></td>
-                            <td align='right' class="px-6 py-4 whitespace-nowrap"> <div className='flex text-green-500 justify-center items-center'>-<FaRupeeSign /><span className="font-bold text-lg">{cartItemObj?.cartTotalDiscount}</span></div></td>
+                            <td className="px-6 py-4 whitespace-nowrap"><span className="text-lg font-bold text-gray-300">Discount :</span></td>
+                            <td align='right' className="px-6 py-4 whitespace-nowrap"> <div className='flex text-green-500 justify-center items-center'>-<FaRupeeSign /><span className="font-bold text-lg">{cartItemObj?.cartTotalDiscount}</span></div></td>
                         </tr>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap"><span className="text-lg font-bold text-gray-300">Delivery Charges :</span></td>
-                            <td align='center' class="px-6 py-4 whitespace-nowrap"><span className="font-bold text-lg text-yellow-500">FREE</span></td>
+                            <td className="px-6 py-4 whitespace-nowrap"><span className="text-lg font-bold text-gray-300">Delivery Charges :</span></td>
+                            <td align='center' className="px-6 py-4 whitespace-nowrap"><span className="font-bold text-lg text-yellow-500">FREE</span></td>
                         </tr>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap"><span className="text-2xl font-bold text-blue-400">Total Amount :</span></td>
-                            <td class="px-6 py-4 whitespace-nowrap"><div className="flex justify-center space-x-1 text-white items-center">
+                            <td className="px-6 py-4 whitespace-nowrap"><span className="text-2xl font-bold text-blue-400">Total Amount :</span></td>
+                            <td className="px-6 py-4 whitespace-nowrap"><div className="flex justify-center space-x-1 text-white items-center">
                                 <FaRupeeSign />
                                 <span className="text-lg font-bold ">{cartItemObj?.cartTotalPriceAfterDiscount}</span>
                             </div></td>
                         </tr>
                     </tbody>
                 </table>
-                <Link to={`/address`}
+                <Link onClick={goToShippingAddress}
                     className="btn-bg-color text-center btn-bg-color-hover text-white font-bold py-3 px-6 rounded mt-6 w-full transition duration-300 ease-in-out">Place
                     Order</Link>
             </div>

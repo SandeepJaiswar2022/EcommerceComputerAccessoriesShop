@@ -1,37 +1,68 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setShippingAddress } from '../../State/OrderDetails/OrderDetailsSlice';
+
 
 function Address() {
+    const dispatcher = useDispatch();
+    const navigateTo = useNavigate();
+    const auth = useSelector(state => state.auth);
+
+    useEffect(() => {
+        const currentStep = localStorage.getItem('currentStep');
+        console.log("In Address : ", localStorage.getItem(`currentStep`));
+        if (currentStep !== '1') {
+            navigateTo('/cart');
+        }
+    }, [navigateTo,auth.address]);
+
+
+    const formHandler = (e) => {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+
+        const userData = {
+            firstname: data.get("firstName"),
+            lastname: data.get("lastName"),
+            street: data.get("street"),
+            city: data.get("city"),
+            state: data.get("state"),
+            zip: data.get("zip"),
+            mobile: data.get("mobile")
+        }
+        console.log(userData);
+        dispatcher(setShippingAddress(userData));
+        localStorage.setItem('currentStep', '2');
+        navigateTo(`/preordersummary`);
+    }
+
     return (
-        <div class="container mx-auto py-10 px-4 md:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="container mx-auto py-10 px-4 md:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* List of stored Addresses  */}
-            <div class="bg-gray-800 p-6 rounded-lg shadow-lg custom-scrollbar h-[calc(100vh-4rem)] overflow-y-scroll">
-                <h2 class="text-2xl font-bold text-blue-400 mb-4">Use Below Addresses</h2>
-                <div class="space-y-4">
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg custom-scrollbar h-[calc(100vh-4rem)] overflow-y-scroll">
+                <h2 className="text-2xl font-bold text-blue-400 mb-4">Use Below Addresses</h2>
+                <div className="space-y-4">
 
                     {/* Saved addresses */}
-                    <div class="bg-gray-700 p-4 rounded-lg flex flex-col space-y-2 shadow-md">
-                        <p class="font-semibold">John Doe</p>
-                        <p class="text-gray-300">1234 Elm Street, Apt 56 Springfield, IL 62704</p>
-                        <p class="text-gray-400">+1 234-567-8901</p>
-                        <button
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-in-out">Deliver
-                            Here</button>
-                    </div>
-                    <div class="bg-gray-700 p-4 rounded-lg flex flex-col space-y-2 shadow-md">
-                        <p class="font-semibold">Jane Smith</p>
-                        <p class="text-gray-300">5678 Oak Avenue Columbus, OH 43215</p>
-                        <p class="text-gray-400">+1 987-654-3210</p>
-                        <button
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-in-out">Deliver
-                            Here</button>
-                    </div>
+                    {auth?.user?.addresses?.length > 0 ?
+                        auth?.user?.addresses?.map((address) => (<div key={address.id} className="bg-gray-700 p-4 rounded-lg flex flex-col space-y-2 shadow-md">
+                            <p className="font-bold text-white">{address.firstname} {address.lastname}</p>
+                            <p className="text-gray-300"><span className='font-bold text-white'>Address : </span>{address.street + `, ` + address.city + ` - ` + address.zip + `, ` + address.state}</p>
+                            <p className="text-gray-300"><span className='font-bold text-white'>Mobile : </span>{address.mobile}</p>
+                            <button
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-in-out">Deliver
+                                Here</button>
+                        </div>)
+                        )
+                        : <div className='font-bold text-white bg-gray-700 rounded-md text-xl text-center p-4'>No Previous Shipping Addresses Found</div>}
                 </div>
             </div>
 
             {/* Address Form  */}
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h2 className="text-2xl font-bold text-white mb-4">Add New Address</h2>
-                <form action="#" method="POST">
+                <form onSubmit={formHandler}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label htmlFor="firstName" className="block text-gray-400 mb-1">First Name</label>
@@ -56,10 +87,10 @@ function Address() {
                     </div>
 
                     <div className="mb-4">
-                        <label htmlFor="message" className="block text-gray-400 mb-1">Address</label>
+                        <label htmlFor="street" className="block text-gray-400 mb-1">Street</label>
                         <textarea
-                            id="message"
-                            name="message"
+                            id="street"
+                            name="street"
                             rows="4"
                             className="w-full p-3 border border-gray-700 rounded-lg bg-black text-gray-300"
                             required
@@ -68,21 +99,21 @@ function Address() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label htmlFor="firstName" className="block text-gray-400 mb-1">City</label>
+                            <label htmlFor="city" className="block text-gray-400 mb-1">City</label>
                             <input
                                 type="text"
-                                id="firstName"
-                                name="firstName"
+                                id="city"
+                                name="city"
                                 className="w-full p-3 border border-gray-700 rounded-lg bg-black text-gray-300"
                                 required
                             />
                         </div>
                         <div>
-                            <label htmlFor="lastName" className="block text-gray-400 mb-1">State</label>
+                            <label htmlFor="state" className="block text-gray-400 mb-1">State</label>
                             <input
                                 type="text"
-                                id="lastName"
-                                name="lastName"
+                                id="state"
+                                name="state"
                                 className="w-full p-3 border border-gray-700 rounded-lg bg-black text-gray-300"
                                 required
                             />
@@ -92,21 +123,21 @@ function Address() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label htmlFor="firstName" className="block text-gray-400 mb-1">Zip Code</label>
+                            <label htmlFor="zip" className="block text-gray-400 mb-1">Zip Code</label>
                             <input
                                 type="text"
-                                id="firstName"
-                                name="firstName"
+                                id="zip"
+                                name="zip"
                                 className="w-full p-3 border border-gray-700 rounded-lg bg-black text-gray-300"
                                 required
                             />
                         </div>
                         <div>
-                            <label htmlFor="lastName" className="block text-gray-400 mb-1">Phone Number</label>
+                            <label htmlFor="mobile" className="block text-gray-400 mb-1">Phone Number</label>
                             <input
                                 type="text"
-                                id="lastName"
-                                name="lastName"
+                                id="mobile"
+                                name="mobile"
                                 className="w-full p-3 border border-gray-700 rounded-lg bg-black text-gray-300"
                                 required
                             />
@@ -116,7 +147,7 @@ function Address() {
                     {/* Submit Button  */}
                     <div>
                         <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-in-out w-full shadow-md">
+                            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-in-out w-full shadow-md">
                             Deliver Here
                         </button>
                     </div>

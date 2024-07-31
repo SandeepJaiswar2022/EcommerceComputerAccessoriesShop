@@ -47,6 +47,7 @@ function ProductSlider({ rem, title = `In Offer` }) {
         <div key={title} className="mb-8 relative container md:px-8 lg:px-12 py-8 px-4 justify-between items-center">
             <div className='flex items-center justify-center'>
                 <div className="flex mb-10 items-center justify-center lg:w-1/4 md:w-1/3 sm:w-2/3">
+                    {/* Border Thicker */}
                     <div className="flex-1 border-t-2 inline-block border-white"></div>
                     <h3 className="tracking-tighter lg:text-xl md:text-lg sm:text-sm font-bold mx-4 text-white">{title}</h3>
                     <div className="flex-1 border-t-2 border-white"></div>

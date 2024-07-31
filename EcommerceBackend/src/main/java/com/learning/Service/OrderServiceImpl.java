@@ -56,6 +56,7 @@ public class OrderServiceImpl  implements OrderService{
 
             orderItem.setProduct(cartItem.getProduct());
             orderItem.setUserId(cartItem.getUser().getId());
+            orderItem.setOrderStatus("PENDING");
 
 
             double discountPrice = orderItem.getProduct().getDiscountPrice()*cartItem.getQuantity();
@@ -78,7 +79,6 @@ public class OrderServiceImpl  implements OrderService{
 
         order.setOrderDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         order.setOrderTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
-        order.setOrderStatus("PENDING");
         order.getPaymentDetail().setStatus("COMPLETED");
 
        Order savedOrder= orderRepo.save(order);
@@ -109,41 +109,13 @@ public class OrderServiceImpl  implements OrderService{
         return orderRepo.findUserOrders(userId);
     }
 
-    @Override
-    public Order placedOrder(Integer orderId) throws OrderException {
-        Order order = getOrderById(orderId);
-        order.setOrderStatus("PLACED");
-        order.getPaymentDetail().setStatus("COMPLETED");
-        return orderRepo.save(order);
-    }
-
-    @Override
-    public Order confirmedOrder(Integer orderId) throws OrderException {
-        Order order = getOrderById(orderId);
-        order.setOrderStatus("CONFIRMED");
-        return orderRepo.save(order);
-    }
-
-    @Override
-    public Order shippedOrder(Integer orderId) throws OrderException {
-        Order order = getOrderById(orderId);
-        order.setOrderStatus("SHIPPED");
-        return orderRepo.save(order);
-    }
-
-    @Override
-    public Order cancledOrder(Integer orderId) throws OrderException {
-        Order order = getOrderById(orderId);
-        order.setOrderStatus("CANCELLED");
-        return orderRepo.save(order);
-    }
-
-    @Override
-    public Order deliveredOrder(Integer orderId) throws OrderException {
-        Order order = getOrderById(orderId);
-        order.setOrderStatus("DELIVERED");
-        return orderRepo.save(order);
-    }
+//    @Override
+//    public Order placedOrder(Integer orderId) throws OrderException {
+//        Order order = getOrderById(orderId);
+//        order.setOrderStatus("PLACED");
+//        order.getPaymentDetail().setStatus("COMPLETED");
+//        return orderRepo.save(order);
+//    }
 
     @Override
     public List<Order> getAllOrders() {

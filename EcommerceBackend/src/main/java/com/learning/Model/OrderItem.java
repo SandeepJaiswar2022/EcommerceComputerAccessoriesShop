@@ -30,6 +30,8 @@ public class OrderItem {
 
     private Double discountPrice;
 
+    private String orderStatus;
+
     private Integer userId;
 
     private LocalDateTime deliveryDate;

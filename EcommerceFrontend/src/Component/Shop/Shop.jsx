@@ -14,7 +14,7 @@ function Shop() {
 
     useEffect(() => {
         dispatch(getAllProducts());
-        console.log("Get All Product Called ");
+        // console.log("Get All Product Called ");
     }, [])
 
 
@@ -22,7 +22,7 @@ function Shop() {
         // < !--Filter and Product Section-- >
         <div className="container mx-auto py-8 px-8 flex flex-col lg:flex-row">
             {/* <!-- Filter Section --> */}
-            <ToastContainer autoClose={1000} />
+            <ToastContainer autoClose={300} />
             <div className="w-full lg:w-1/4 lg:block hidden custom-color text-white p-4 rounded-lg">
                 <h2 className="text-xl font-bold mb-4">Filters</h2>
                 <div className="mb-4">
