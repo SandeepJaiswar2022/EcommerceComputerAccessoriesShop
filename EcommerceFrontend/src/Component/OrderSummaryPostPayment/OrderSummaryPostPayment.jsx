@@ -1,13 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaRupeeSign } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import { getOrderByOrderId } from '../../State/OrderDetails/OrderDetailsSlice';
+import { updatePayment } from '../../State/Payment/PaymentSlice';
 
 const OrderSummaryPostPayment = () => {
     const orderDetails = useSelector(state => state.orderDetails);
-    console.log(orderDetails?.order);
     const order = orderDetails?.order;
+    const dispatch = useDispatch();
+    const [paymentId, setPaymentId] = useState();
+    const [referenceId, setReferenceId] = useState();
+    const [paymentStatus, setPaymentStatus] = useState();
+    const { orderId } = useParams();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,8 +22,18 @@ const OrderSummaryPostPayment = () => {
         if (currentStep !== '3') {
             navigate('/cart');
         }
-        toast.success("Order Booked Jhala post...");
+
+        const urlParam = new URLSearchParams(window.location.search);
+        setPaymentId(urlParam.get("razorpay_payment_id"));
+        setPaymentStatus(urlParam.get("razorpay_payment_link_status"));
+        toast.success("Order Booked Successfully post...");
     }, [navigate]);
+
+    useEffect(() => {
+        const data = { orderId, paymentId };
+        dispatch(getOrderByOrderId(orderId));
+        dispatch(updatePayment(data));
+    }, [orderId,paymentId]);
 
     return (
         <div className="container mx-auto p-6 bg-gray-900 min-h-screen text-white">

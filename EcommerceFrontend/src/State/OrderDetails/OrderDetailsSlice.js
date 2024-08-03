@@ -27,6 +27,30 @@ export const createOrder = createAsyncThunk("createOrder", async (userData, { re
     }
 });
 
+export const getOrderByOrderId = createAsyncThunk("getOrderById", async (orderId, { rejectWithValue }) => {
+    try {
+        const jwtToken = localStorage.getItem(`jwtToken`);
+        if (!jwtToken) {
+            console.log("No Token Found");
+            throw new Error('No Token Found');
+        }
+        const response = await axios.post(`${BASE_URL}/order/${orderId}`, {
+            headers: {
+                Authorization: `Bearer ${jwtToken}`,
+            },
+        });
+        const data = await response.data;
+        console.log(`Order with ${orderId} fetched Successfully`);
+        return data;
+    } catch (error) {
+        console.log("Error : ", error.response);
+        if (!error.response) {
+            throw error;
+        }
+        return rejectWithValue(error.response.data);
+    }
+});
+
 export const getUserOrderHistory = createAsyncThunk("getUserOrderHistory", async (_, { rejectWithValue }) => {
     try {
         const jwtToken = localStorage.getItem(`jwtToken`);
@@ -104,6 +128,19 @@ export const OrderDetails = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 toast.error('Order could not be placed');
+            })
+            .addCase(getOrderByOrderId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getOrderByOrderId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.order = action.payload;
+                state.error = null;
+            })
+            .addCase(getOrderByOrderId.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
             .addCase(getUserOrderHistory.pending, (state) => {
                 state.loading = true;

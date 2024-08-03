@@ -57,15 +57,15 @@ public class OrderController {
         return ResponseEntity.ok(orderList);
     }
 
-//    @GetMapping("/order/{orderId}")
-//    @PreAuthorize("hasAuthority('user:read')")
-//    public ResponseEntity<?> findOrderById(
-//            @PathVariable Integer orderId,
-//            @RequestHeader("Authorization") String authHeader) throws UserException, OrderException {
-//     User user = userService.findUserByJwtToken(authHeader);
-//     Order order = orderService.getOrderById(orderId);
-//     return ResponseEntity.ok(order);
-//    }
+    @GetMapping("/order/{orderId}")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ResponseEntity<?> findOrderById(
+            @PathVariable Integer orderId,
+            @RequestHeader("Authorization") String authHeader) throws UserException, OrderException {
+     User user = userService.findUserByJwtToken(authHeader);
+     Order order = orderService.getOrderById(orderId);
+     return ResponseEntity.ok(order);
+    }
 
     @GetMapping("/admin/order")
     @PreAuthorize("hasAuthority('admin:read')")
@@ -115,6 +115,7 @@ public class OrderController {
         return ResponseEntity.ok("Order Cancelled");    }
 
     @DeleteMapping("/admin/order/delete/{orderId}")
+    @PreAuthorize("hasAuthority('admin:delete')")
     public ResponseEntity<?> deleteOrderById(
             @PathVariable Integer orderId) throws OrderException {
         orderService.deleteOrder(orderId);

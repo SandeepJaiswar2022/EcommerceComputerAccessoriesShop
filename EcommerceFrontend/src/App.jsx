@@ -30,7 +30,7 @@ function App() {
         <Route path='/product/:productId' element={<ViewProduct />} />
         <Route path='/preordersummary' element={<OrderSummaryPrePayment />} />
         <Route path='/address' element={<Address />} />
-        <Route path='/postordersummary' element={<OrderSummaryPostPayment />} />
+        <Route path='/postordersummary/:orderId' element={<OrderSummaryPostPayment />} />
 
         <Route
           path="/signup"

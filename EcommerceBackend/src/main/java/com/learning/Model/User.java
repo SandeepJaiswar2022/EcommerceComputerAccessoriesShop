@@ -39,6 +39,7 @@ public class User implements UserDetails {
 
 
     @ElementCollection
+    @JsonIgnore
     @CollectionTable(name = "user_payment_info", joinColumns = @JoinColumn(name = "user_id"))
     private List<PaymentInfo> paymentInfos = new ArrayList<>();
 

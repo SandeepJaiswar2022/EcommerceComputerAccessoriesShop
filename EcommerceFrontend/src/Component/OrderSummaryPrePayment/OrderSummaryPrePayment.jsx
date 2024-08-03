@@ -5,6 +5,7 @@ import { getCartItems } from '../../State/CartItem/CartItemSlice';
 import { FaRupeeSign } from 'react-icons/fa'
 import { createOrder } from '../../State/OrderDetails/OrderDetailsSlice';
 import { toast } from 'react-toastify';
+import { createPayment } from '../../State/Payment/PaymentSlice';
 
 
 function OrderSummaryPrePayment() {
@@ -14,6 +15,7 @@ function OrderSummaryPrePayment() {
     const jwtToken = useSelector((state) => state.auth.jwtToken);
     const navigateTo = useNavigate();
     const orderDetails = useSelector(state => state.orderDetails);
+    const orderId = orderDetails?.order?.id;
     const shippingAddress = orderDetails.shippingAddress;
 
     useEffect(() => {
@@ -25,13 +27,11 @@ function OrderSummaryPrePayment() {
 
 
     const goToOrderPlaced = () => {
-        dispatch(createOrder(shippingAddress));
+        // dispatch(createOrder(shippingAddress));
         console.log("In PreOrder Summary : ", localStorage.getItem(`currentStep`));
-        setTimeout(() => {
-            localStorage.setItem('currentStep', '3');
-            toast.success("Order Booked Jhala pre...");
-            navigateTo(`/postordersummary`);
-        }, 2000);
+        localStorage.setItem('currentStep', '3');
+        dispatch(createPayment(orderId));
+        // navigateTo(`/postordersummary/${orderId}`);
     }
 
     return (
@@ -144,7 +144,7 @@ function OrderSummaryPrePayment() {
                         </tbody>
                     </table>
                     <Link onClick={goToOrderPlaced}
-                        className="btn-bg-color text-center btn-bg-color-hover text-white font-bold py-3 px-6 rounded mt-6 w-full transition duration-300 ease-in-out">Proceed To Chekout</Link>
+                        className="btn-bg-color text-center btn-bg-color-hover text-white font-bold py-3 px-6 rounded mt-6 w-full transition duration-300 ease-in-out">Proceed To Checkout</Link>
                 </div>
 
             </section>

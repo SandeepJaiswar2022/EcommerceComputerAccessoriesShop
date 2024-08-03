@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setShippingAddress } from '../../State/OrderDetails/OrderDetailsSlice';
+import { createOrder, setShippingAddress } from '../../State/OrderDetails/OrderDetailsSlice';
 
 
 function Address() {
@@ -34,6 +34,7 @@ function Address() {
         console.log(userData);
         dispatcher(setShippingAddress(userData));
         localStorage.setItem('currentStep', '2');
+        dispatcher(createOrder(userData));
         navigateTo(`/preordersummary`);
     }
 
