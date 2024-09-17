@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { deleteCartItem, getCartItems } from '../../State/CartItem/CartItemSlice';
+import { deleteCartItem } from '../../State/CartItem/CartItemSlice';
 import CartItem from '../CartItem/CartItem';
 import { FaRupeeSign } from 'react-icons/fa'
 import { ToastContainer } from 'react-toastify';
@@ -12,12 +12,6 @@ function ViewCart() {
     const cartItems = cartItemObj?.cartItems; //Array
     const jwtToken = useSelector((state) => state.auth.jwtToken);
     const navigateTo = useNavigate();
-
-    useEffect(() => {
-        if (jwtToken) {
-            dispatch(getCartItems(jwtToken));
-        }
-    }, [dispatch, jwtToken]);
 
     useEffect(() => {
         localStorage.setItem('currentStep', '0');

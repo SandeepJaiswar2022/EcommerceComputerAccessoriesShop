@@ -16,5 +16,9 @@ import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import ProtectedRouteLoggedInOnly from "./ProtectedRoute/ProtectedRouteLoggedInOnly";
 import OrderSummaryPostPayment from "./OrderSummaryPostPayment/OrderSummaryPostPayment";
 import OrderSummaryPrePayment from "./OrderSummaryPrePayment/OrderSummaryPrePayment";
+import Filter from "./Filter/Filter";
+import Admin from "./Admin/Admin";
+import AllProducts from "./Admin/AllProducts";
 
-export { Header, Footer, Contactus, Home, Carousel, ProductSlider, Shop, ViewProduct, ViewCart, Address, OrderSummaryPostPayment, MyOrders, UserAvatar, UserProfile, CustomProduct, ProtectedRoute, ProtectedRouteLoggedInOnly, OrderSummaryPrePayment }
+
+export { AllProducts, Admin, Header, Footer, Contactus, Home, Carousel, ProductSlider, Shop, ViewProduct, ViewCart, Address, OrderSummaryPostPayment, MyOrders, UserAvatar, UserProfile, CustomProduct, ProtectedRoute, ProtectedRouteLoggedInOnly, OrderSummaryPrePayment, Filter }

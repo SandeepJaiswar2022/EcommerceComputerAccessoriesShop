@@ -64,7 +64,7 @@ function CartItem({ cartItem, deleteCartItemHandler }) {
                 className="w-25 cursor-pointer h-20 object-cover rounded-md mb-4 md:mb-0 md:mr-4" />
             <div className="flex-1 text-center md:text-left mb-4 md:mb-0">
                 <h2 className="text-lg font-bold text-blue-400">{cartItem.product.title}</h2>
-                <p className="text-gray-300">Brand: XYZ</p>
+                <p className="text-gray-300 font-bold">Brand: {cartItem?.product?.brand}</p>
                 <div className='text-gray-400 flex'><FaRupeeSign className='mt-1' /><p className="line-through">{cartItem.product.price}</p></div>
                 <div className='flex'><FaRupeeSign className='mt-1 text-yellow-500' /><p className="text-yellow-500">{cartItem.product.discountPrice} <span className="text-green-500">{cartItem.product.discountPercentage}% off</span></p></div>
             </div>

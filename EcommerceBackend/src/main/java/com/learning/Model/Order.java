@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -38,12 +40,25 @@ public class Order {
     @Embedded
     private PaymentDetails paymentDetail = new PaymentDetails();
 
-    private Double totalPrice;
+    private BigDecimal totalPrice;
 
-    private Double totalDiscountPrice;
+    private BigDecimal totalDiscountPrice;
 
-    private Double discount;
+    private BigDecimal discount;
 
     private Integer totalItem;
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        // Round the price to 2 decimal places
+        this.totalPrice = totalPrice.setScale(2, RoundingMode.DOWN);
+    }
+    public void setTotalDiscountPrice(BigDecimal totalDiscountPrice) {
+        // Round the price to 2 decimal places
+        this.totalDiscountPrice = totalDiscountPrice.setScale(2, RoundingMode.DOWN);
+    }
+    public void setDiscount(BigDecimal discount) {
+        // Round the price to 2 decimal places
+        this.discount = discount.setScale(2, RoundingMode.DOWN);
+    }
 
 }

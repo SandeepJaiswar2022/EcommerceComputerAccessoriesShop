@@ -15,11 +15,14 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -29,6 +32,7 @@ import java.util.List;
 @CrossOrigin
 public class PaymentController {
 
+    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
     private final OrderItemRepo orderItemRepo;
     @Value("${razorpay.api.key}")
     String apiKey;
@@ -62,7 +66,9 @@ public class PaymentController {
             notify.put("email", true);
 
             JSONObject paymentLinkRequest = new JSONObject();
-            paymentLinkRequest.put("amount", Math.round(order.getTotalDiscountPrice()*100));
+            BigDecimal amount = order.getTotalDiscountPrice().multiply(BigDecimal.valueOf(100));
+            System.out.println("\n\n\nAmount : " + amount+"\n\n\n");
+            paymentLinkRequest.put("amount", amount);
             paymentLinkRequest.put("currency", "INR");
             paymentLinkRequest.put("notify", notify);
             paymentLinkRequest.put("customer", customer);

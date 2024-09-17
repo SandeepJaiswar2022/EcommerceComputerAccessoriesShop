@@ -54,7 +54,13 @@ function ViewProduct() {
                 <div className="p-4 ">
                     <h1 className="text-4xl font-bold mb-4 text-indigo-400">{product.product?.title}</h1>
                     <p className="text-xl font-bold text-gray-300 mb-2">Brand: <span className="italic text-indigo-500">{product.product?.brand}</span></p>
-                    <div className='flex'><FaRupeeSign className="text-yellow-500 text-xl mt-1 " /><p className="text-2xl text-yellow-500 mb-4">{product.product?.price}</p></div>
+
+                    <p className="text-gray-200 my-4 space-x-2 text-lg flex items-center">
+                        <span className='flex text-2xl text-yellow-500'><FaRupeeSign className="mt-1" />{product?.product?.discountPrice} </span>
+                        <span className='flex text-xl text-gray-400 line-through'>₹{product?.product?.price}</span>
+                        <span className='flex text-2xl text-green-400'>{product?.product?.discountPercentage}% Off</span>
+                    </p>
+
                     <p className="mb-6 text-gray-200">{product.product?.description}</p>
 
                     <div className="mb-6">
@@ -69,7 +75,7 @@ function ViewProduct() {
                         </ul>
                     </div>
 
-                    <button onClick={updateCartHandler} className="btn-bg-color btn-bg-color-hover text-white font-bold py-2 px-6 rounded mt-4 transition duration-300 ease-in-out">Add to Cart</button>
+                    <button onClick={updateCartHandler} className="btn-bg-color btn-bg-color-hover text-white font-bold py-3 px-8 mt-4 transition duration-300 ease-in-out">Add to Cart</button>
                 </div>
             </div>
             {/* <ProductSlider title={`SIMILAR PRODUCTS`} /> */}

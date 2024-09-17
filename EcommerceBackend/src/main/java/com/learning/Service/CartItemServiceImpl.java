@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,13 +41,13 @@ public class CartItemServiceImpl implements CartItemService {
         if (cartItem != null) {
             addedQuantity = cartItem.getQuantity() + quantity;
             cartItem.setQuantity(addedQuantity);
-            cartItem.setTotalPrice(addedQuantity * product.getPrice());
+            cartItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(addedQuantity)));
         } else {
             cartItem = new CartItem();
             cartItem.setQuantity(quantity);
             cartItem.setProduct(product);
             cartItem.setUser(user);
-            cartItem.setTotalPrice(quantity * product.getPrice());
+            cartItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
         }
         cartItemRepo.save(cartItem);
         return quantity;
@@ -60,7 +61,7 @@ public class CartItemServiceImpl implements CartItemService {
         //CartItem always exists
         if (cartItem != null) {
             cartItem.setQuantity(quantity);
-            cartItem.setTotalPrice(quantity * product.getPrice());
+            cartItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
         }
         else
             throw new ProductException("Product not found");

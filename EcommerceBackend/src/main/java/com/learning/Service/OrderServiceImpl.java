@@ -11,6 +11,8 @@ import com.learning.Repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -39,16 +41,17 @@ public class OrderServiceImpl  implements OrderService{
 
         List<OrderItem> orderItemList = new ArrayList<>();
 
-        double allCartItemPrice = 0;
-        double totalDiscountPrice = 0;
+        BigDecimal allCartItemPrice = BigDecimal.valueOf(0);
+        BigDecimal totalDiscountPrice = BigDecimal.valueOf(0);
         Integer totalQuantity = 0;
         for (CartItem cartItem : cartItemList) {
 
             OrderItem orderItem = new OrderItem();
 
-            double  totalPrice= cartItem.getTotalPrice();
+            BigDecimal totalPrice= cartItem.getTotalPrice();
             orderItem.setPrice(totalPrice);
-            allCartItemPrice+=totalPrice;
+
+            allCartItemPrice = allCartItemPrice.add(totalPrice);
 
             Integer quantity = cartItem.getQuantity();
             orderItem.setQuantity(quantity);
@@ -59,14 +62,20 @@ public class OrderServiceImpl  implements OrderService{
             orderItem.setOrderStatus("PENDING");
 
 
-            double discountPrice = orderItem.getProduct().getDiscountPrice()*cartItem.getQuantity();
+//            double discountPrice = orderItem.getProduct().getDiscountPrice()*cartItem.getQuantity();
+            BigDecimal discountPrice = orderItem.getProduct().getDiscountPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+//            cartItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
             orderItem.setDiscountPrice(discountPrice);
-            totalDiscountPrice+=discountPrice;
+            totalDiscountPrice=totalDiscountPrice.add(discountPrice);
             OrderItem orderItemSaved = orderItemRepo.save(orderItem);
             orderItemList.add(orderItemSaved);
         }
 
-        double discountPercentage = ((allCartItemPrice-totalDiscountPrice)*100)/allCartItemPrice;
+//        BigDecimal discountPercentage = ((allCartItemPrice-totalDiscountPrice)*100)/allCartItemPrice;
+
+        BigDecimal discountPercentage = allCartItemPrice.subtract(totalDiscountPrice) // Subtract discount from total price
+                .multiply(BigDecimal.valueOf(100)) // Multiply by 100 to get percentage
+                .divide(allCartItemPrice, 2, RoundingMode.HALF_UP);
 
         Order order = new Order();
         order.setUser(user);

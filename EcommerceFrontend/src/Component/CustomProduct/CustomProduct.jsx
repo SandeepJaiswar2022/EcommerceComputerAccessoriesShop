@@ -29,7 +29,7 @@ function CustomProduct({ product }) {
             <div className="w-full h-64 relative overflow-hidden rounded-sm">
                 <img onClick={() => goToProductView(product?.id)} src={`/ProductImages/${product?.imageUrl}`} alt="Product Image"
                     className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" />
-                <button onClick={updateCartHandler} className="btn-bg-color btn-bg-color-hover font-medium text-white py-2 hover:font-bold w-full absolute bottom-0 left-0 transform translate-y-full transition-transform duration-700 ease-in-out group-hover:translate-y-0">
+                <button onClick={updateCartHandler} className="btn-bg-color btn-bg-color-hover text-white py-2 font-bold w-full absolute bottom-0 left-0 transform translate-y-full transition-transform duration-700 ease-in-out group-hover:translate-y-0">
                     Add to Cart
                 </button>
             </div>
@@ -38,8 +38,11 @@ function CustomProduct({ product }) {
                 <h3 className="text-xl text-white text-center font-semibold mb-2">
                     {product?.title}
                 </h3>
-                <p className="text-gray-200 mb-2 text-lg flex items-center">
-                    <FaRupeeSign className="mr-1" /> {product?.price}
+                <p className="text-gray-200 mb-2 space-x-2 text-lg flex items-center">
+                    <span className='flex'><FaRupeeSign className="mt-1" /> {product?.discountPrice}</span>
+
+                    <span className='flex text-sm text-white line-through'>₹ {product?.price}</span>
+                    <span className='flex text-lg text-green-500'>{product?.discountPercentage}% Off</span>
                 </p>
 
             </div>

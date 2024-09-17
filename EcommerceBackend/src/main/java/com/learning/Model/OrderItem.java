@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,13 +28,23 @@ public class OrderItem {
 
     private Integer quantity;
 
-    private Double price;
+    private BigDecimal price;
 
-    private Double discountPrice;
+    private BigDecimal discountPrice;
 
     private String orderStatus;
 
     private Integer userId;
 
     private LocalDateTime deliveryDate;
+
+    public void setDiscountPrice(BigDecimal discountPrice) {
+        // Round the price to 2 decimal places
+        this.discountPrice = discountPrice.setScale(2, RoundingMode.DOWN);
+    }
+
+    public void setPrice(BigDecimal price) {
+        // Round the price to 2 decimal places
+        this.price = price.setScale(2, RoundingMode.DOWN);
+    }
 }

@@ -8,7 +8,7 @@ const SignIn = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const user = useSelector((state) => state.auth.user);
+    const auth = useSelector((state) => state.auth);
 
 
     const formHandler = (e) => {
@@ -21,7 +21,6 @@ const SignIn = () => {
         }
 
         dispatch(login(userData));
-
         navigate('/'); // Redirect to home page
     }
 

@@ -28,6 +28,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request->request.requestMatchers("ecommerce/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/ecommerce/products/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/ecommerce/products/**").hasAuthority("admin:update")
                         .anyRequest().authenticated())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

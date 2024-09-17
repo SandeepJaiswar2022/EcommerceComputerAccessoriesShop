@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/ecommerce")
 @PreAuthorize("hasAnyRole('ADMIN','USER')")
 @RequiredArgsConstructor
-//CrossOrigin
 @CrossOrigin
 public class ProductController {
 

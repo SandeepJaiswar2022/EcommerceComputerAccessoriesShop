@@ -38,6 +38,12 @@ function Address() {
         navigateTo(`/preordersummary`);
     }
 
+    //In previsous Address;
+    // const deliverHereHandler= (userData)=>{
+    //     localStorage.setItem('currentStep', '2');
+    //     dispatcher(createOrder(userData));
+    //     navigateTo(`/preordersummary`);
+    // }
     return (
         <div className="container mx-auto py-10 px-4 md:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* List of stored Addresses  */}
@@ -51,7 +57,7 @@ function Address() {
                             <p className="font-bold text-white">{address.firstname} {address.lastname}</p>
                             <p className="text-gray-300"><span className='font-bold text-white'>Address : </span>{address.street + `, ` + address.city + ` - ` + address.zip + `, ` + address.state}</p>
                             <p className="text-gray-300"><span className='font-bold text-white'>Mobile : </span>{address.mobile}</p>
-                            <button
+                            <button onClick={()=>deliverHereHandler(address)}
                                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors duration-300 ease-in-out">Deliver
                                 Here</button>
                         </div>)

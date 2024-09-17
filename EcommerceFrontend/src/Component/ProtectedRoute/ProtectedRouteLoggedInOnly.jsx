@@ -3,12 +3,14 @@ import { Navigate } from 'react-router-dom';
 
 
 const ProtectedRouteLoggedInOnly = ({ children }) => {
-    const jwtToken = useSelector((state) => state.auth.jwtToken);
+    const auth = useSelector((state) => state.auth);
 
-    if (!jwtToken) {
+    if (!auth?.jwtToken) {
         return <Navigate to={`/signin`} />
     }
-
+    if (auth?.user?.role === 'ADMIN') {
+        return <Navigate to={`/admin/dashboard`} />
+    }
     return children;
 };
 

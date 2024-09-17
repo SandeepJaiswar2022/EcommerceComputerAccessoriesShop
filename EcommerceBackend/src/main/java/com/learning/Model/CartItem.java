@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -26,9 +29,15 @@ public class CartItem {
 
     private Integer quantity;
 
-    private Double totalPrice;
+    private BigDecimal totalPrice;
 
+    public void setTotalPrice(BigDecimal totalPrice) {
+        // Round the price to 2 decimal places
+        this.totalPrice = totalPrice.setScale(2, RoundingMode.DOWN);
+    }
 }
+
+
 
 //JSON IGNORE on both product and user
 /*

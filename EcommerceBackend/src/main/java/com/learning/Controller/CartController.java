@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -37,15 +38,16 @@ public class CartController {
         List<CartItem> cartItems = cartItemService.findByUser(user);
         CartItemResponse cartItemResponse = new CartItemResponse();
         Integer cartTotalQuantity=0;
-        Double cartTotalPrice=0.0;
-        double cartTotalDiscount=0.0;
-        Double cartTotalPriceAfterDiscount=0.0;
+        BigDecimal cartTotalPrice= BigDecimal.valueOf(0.0);
+        BigDecimal cartTotalDiscount= BigDecimal.valueOf(0.0);
+        BigDecimal cartTotalPriceAfterDiscount= BigDecimal.valueOf(0.0);
         for (CartItem cartItem : cartItems) {
             cartTotalQuantity += cartItem.getQuantity();
-            cartTotalPrice+=cartItem.getTotalPrice();
-            cartTotalPriceAfterDiscount+=cartItem.getProduct().getDiscountPrice()*cartItem.getQuantity();
+            cartTotalPrice=cartTotalPrice.add(cartItem.getTotalPrice());
+            cartTotalPriceAfterDiscount=cartTotalPriceAfterDiscount.add(cartItem.getProduct().getDiscountPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+            //cartItem.setTotalPrice(product.getPrice().multiply(BigDecimal.valueOf(quantity)));
         }
-        cartTotalDiscount=cartTotalPrice-cartTotalPriceAfterDiscount;
+        cartTotalDiscount=cartTotalPrice.subtract(cartTotalPriceAfterDiscount);
         cartItemResponse.setCartTotalQuantity(cartTotalQuantity);
         cartItemResponse.setCartTotalPrice(cartTotalPrice);
         cartItemResponse.setCartTotalDiscount(cartTotalDiscount);

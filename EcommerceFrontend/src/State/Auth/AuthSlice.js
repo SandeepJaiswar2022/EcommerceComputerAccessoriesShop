@@ -24,6 +24,7 @@ export const login = createAsyncThunk("login", async (userData, { rejectWithValu
 export const logout = createAsyncThunk('logout', async (_, { dispatch }) => {
 
     localStorage.removeItem('jwtToken');
+    localStorage.removeItem('role');
     dispatch(clearCart());
     toast.success("Logged Out successfully");
 
@@ -43,7 +44,6 @@ export const getUserProfile = createAsyncThunk('getUserProfile', async (jwtToken
             },
         });
         const userData = await response.data;
-        // toast.success("User added successfully");
         return userData;
     } catch (error) {
         if (!error.response) {
@@ -76,7 +76,8 @@ export const UserAuthentication = createSlice({
         user: null,
         loading: false,
         error: null,
-        jwtToken: localStorage.getItem('jwtToken') || null
+        jwtToken: localStorage.getItem('jwtToken') || null,
+        role: localStorage.getItem('role') || null
     },
 
     extraReducers: (builder) => {
@@ -89,7 +90,6 @@ export const UserAuthentication = createSlice({
                 state.loading = false;
                 state.jwtToken = action.payload;
                 state.error = null;
-                localStorage.setItem('token', action.payload);
                 toast.success('Login successful!');
             })
             .addCase(login.rejected, (state, action) => {
@@ -113,6 +113,7 @@ export const UserAuthentication = createSlice({
             .addCase(logout.fulfilled, (state) => {
                 state.loading = false;
                 state.jwtToken = null;
+                state.role = null;
                 state.user = null;
                 state.error = null;
             })
@@ -123,6 +124,8 @@ export const UserAuthentication = createSlice({
             .addCase(getUserProfile.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload;
+                state.role = state.user.role;
+                // localStorage.setItem(`role`, state.user.role);
                 state.error = null;
             })
             .addCase(getUserProfile.rejected, (state, action) => {

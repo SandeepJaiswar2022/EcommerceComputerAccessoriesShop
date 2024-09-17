@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    @JsonIgnore
+//    @JsonIgnore
     private Role role;
 
 
