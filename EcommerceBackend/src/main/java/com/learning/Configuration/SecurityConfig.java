@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request->request.requestMatchers("ecommerce/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/ecommerce/products/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/ecommerce/products/**").hasAuthority("admin:update")
+                        .requestMatchers(HttpMethod.GET, "/ecommerce/category/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

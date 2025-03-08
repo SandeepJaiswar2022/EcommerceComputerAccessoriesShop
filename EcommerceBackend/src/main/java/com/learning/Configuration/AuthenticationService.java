@@ -2,6 +2,7 @@ package com.learning.Configuration;
 
 import com.learning.DTO.AuthenticationRequest;
 import com.learning.DTO.RegisterRequest;
+import com.learning.Exception.EmailConflictException;
 import com.learning.Exception.UserException;
 import com.learning.Model.Role;
 import com.learning.Model.User;
@@ -23,11 +24,11 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
 
-    public AuthenticationResponse register(RegisterRequest request) throws UserException {
+    public AuthenticationResponse register(RegisterRequest request) throws EmailConflictException {
         User user = userRepo.findByEmail(request.getEmail());
         if(user!=null)
         {
-            throw  new UserException("Email already exists");
+            throw  new EmailConflictException("Email already exists");
         }
 
         user = User.builder()
@@ -56,7 +57,7 @@ public class AuthenticationService {
 
         if(user==null)
         {
-            throw new BadCredentialsException("Invalid email");
+            throw new BadCredentialsException("Email does not exist");
         }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid password");

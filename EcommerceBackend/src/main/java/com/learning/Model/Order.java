@@ -24,7 +24,7 @@ public class Order {
     private int id;
 
     @ManyToOne
-    @JsonIgnore
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

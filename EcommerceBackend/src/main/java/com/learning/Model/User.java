@@ -37,11 +37,20 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Address> addresses = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @ElementCollection
     @JsonIgnore
     @CollectionTable(name = "user_payment_info", joinColumns = @JoinColumn(name = "user_id"))
     private List<PaymentInfo> paymentInfos = new ArrayList<>();
+
+
 
     private LocalDateTime createdAt;
 

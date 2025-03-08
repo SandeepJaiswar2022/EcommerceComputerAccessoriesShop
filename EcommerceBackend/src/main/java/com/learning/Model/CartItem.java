@@ -15,7 +15,8 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 public class CartItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_item_seq_gen")
+    @SequenceGenerator(name = "cart_item_seq_gen", sequenceName = "cart_item_seq", allocationSize = 1)
     private int id;
 
     @ManyToOne

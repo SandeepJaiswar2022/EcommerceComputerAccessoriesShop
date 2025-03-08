@@ -7,6 +7,7 @@ import com.learning.Repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,11 @@ public class UserServiceImpl implements UserService {
             throw new UserException("User not found with email"+email);
         }
         return user;
+    }
+
+    @Override
+    public List<User> findAllUsers() throws UserException {
+        return userRepo.findAll();
     }
 
 }

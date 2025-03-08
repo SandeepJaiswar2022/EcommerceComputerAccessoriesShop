@@ -77,4 +77,9 @@ public class ProductServiceImpl implements ProductService {
         //Pagination implement in react
         //Search by category implement in react (get all product then map)
     }
+
+    @Override
+    public void deleteProductsByCategory(String category) {
+        productRepo.deleteProductsByCategory(category);
+    }
 }

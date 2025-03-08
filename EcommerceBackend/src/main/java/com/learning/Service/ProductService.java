@@ -18,4 +18,6 @@ public interface ProductService {
     public List<Product> getAllProductByCategory(String category);
 
     public List<Product> getAllProducts();
+
+    public void deleteProductsByCategory(String category);
 }

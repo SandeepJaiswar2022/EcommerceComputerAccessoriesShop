@@ -81,8 +81,18 @@ public class OrderController {
             @PathVariable Integer orderItemId
             ) throws UserException, OrderException {
         orderItemService.changeOrderItemStatus(orderItemId,"CONFIRMED");
-        System.out.println("\n\nChange OrderItem Status Confirmed called\n\n");
+//        System.out.println("\n\nChange OrderItem Status Confirmed called\n\n");
         return ResponseEntity.ok("Order confirmed");
+    }
+
+    @PutMapping("/admin/order/pending/{orderItemId}")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public ResponseEntity<?> pendingOrder(
+            @PathVariable Integer orderItemId
+    ) throws UserException, OrderException {
+        orderItemService.changeOrderItemStatus(orderItemId,"PENDING");
+//        System.out.println("\n\nChange OrderItem Status Pending called\n\n");
+        return ResponseEntity.ok("Order is Pending");
     }
 
     @PutMapping("/admin/order/shipped/{orderItemId}")
@@ -91,7 +101,7 @@ public class OrderController {
             @PathVariable Integer orderItemId
     ) throws UserException, OrderException {
         orderItemService.changeOrderItemStatus(orderItemId,"SHIPPED");
-        System.out.println("\n\nChange OrderItem Status Shipped called\n\n");
+//        System.out.println("\n\nChange OrderItem Status Shipped called\n\n");
         return ResponseEntity.ok("Order shipped");
     }
 
@@ -101,17 +111,17 @@ public class OrderController {
             @PathVariable Integer orderItemId
     ) throws UserException, OrderException {
         orderItemService.changeOrderItemStatus(orderItemId,"DELIVERED");
-        System.out.println("\n\nChange OrderItem Status Delivered called\n\n");
+//        System.out.println("\n\nChange OrderItem Status Delivered called\n\n");
         return ResponseEntity.ok("Order Delivered");
     }
 
-    @PutMapping("/order/{orderItemId}")
+    @PutMapping("admin/order/cancelled/{orderItemId}")
     @PreAuthorize("hasAuthority('user:update')")
     public ResponseEntity<?> cancelOrder(
             @PathVariable Integer orderItemId
     ) throws UserException, OrderException {
         orderItemService.changeOrderItemStatus(orderItemId,"CANCELLED");
-        System.out.println("\n\nChange OrderItem Status Cancelled called\n\n");
+//        System.out.println("\n\nChange OrderItem Status Cancelled called\n\n");
         return ResponseEntity.ok("Order Cancelled");    }
 
     @DeleteMapping("/admin/order/delete/{orderId}")
@@ -119,7 +129,7 @@ public class OrderController {
     public ResponseEntity<?> deleteOrderById(
             @PathVariable Integer orderId) throws OrderException {
         orderService.deleteOrder(orderId);
-        System.out.println("\n\nDelete Order by id called\n\n");
+//        System.out.println("\n\nDelete Order by id called\n\n");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

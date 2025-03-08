@@ -4,6 +4,7 @@ import com.learning.DTO.AuthenticationRequest;
 import com.learning.Configuration.AuthenticationResponse;
 import com.learning.Configuration.AuthenticationService;
 import com.learning.DTO.RegisterRequest;
+import com.learning.Exception.EmailConflictException;
 import com.learning.Exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,12 @@ public class AuthController {
 
     @GetMapping("/demo")
     public ResponseEntity<String> demo() {
-        return ResponseEntity.ok("Hello World this is demo page");
+        return ResponseEntity.ok("Hello World");
     }
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request) throws UserException {
+            @RequestBody RegisterRequest request) throws EmailConflictException {
         return ResponseEntity.ok(authService.register(request));
     }
 

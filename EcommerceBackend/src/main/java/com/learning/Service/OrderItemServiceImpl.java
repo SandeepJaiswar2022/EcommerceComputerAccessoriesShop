@@ -23,9 +23,12 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public void changeOrderItemStatus(Integer orderItemId,String status) throws OrderException {
         Optional<OrderItem> orderItem = orderItemRepo.findById(orderItemId);
+        System.out.println("\nFirst in Status change \n");
         if (orderItem.isPresent()) {
             OrderItem orderItem1 = orderItem.get();
+            System.out.println("\nsecond in Status change : "+status);
             orderItem1.setOrderStatus(status);
+            orderItemRepo.save(orderItem1);
         }
     }
 }

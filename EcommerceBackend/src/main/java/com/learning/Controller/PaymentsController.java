@@ -23,20 +23,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ecommerce")
 @PreAuthorize("hasAnyRole('ADMIN','USER')")
 @CrossOrigin
-public class PaymentController {
+public class PaymentsController {
 
     private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
     private final OrderItemRepo orderItemRepo;
@@ -52,7 +54,7 @@ public class PaymentController {
 
     private final OrderRepo orderRepo;
 
-    @PostMapping("/payment/{orderId}")
+    @PostMapping("/payments/{orderId}")
     @PreAuthorize("hasAuthority('user:create')")
     public ResponseEntity<PaymentResponse> createPaymentLink(
             @PathVariable int orderId, @RequestHeader("Authorization") String authHeader)
@@ -61,36 +63,51 @@ public class PaymentController {
         try {
             RazorpayClient razorpay = new RazorpayClient(apiKey, apiSecret);
 
+            // Customer details
             JSONObject customer = new JSONObject();
             customer.put("name", order.getUser().getFirstname());
             customer.put("email", order.getUser().getEmail());
 
+            // Notification settings
             JSONObject notify = new JSONObject();
             notify.put("sms", true);
             notify.put("email", true);
 
+            // Payment link request
             JSONObject paymentLinkRequest = new JSONObject();
-            int amount = order.getTotalDiscountPrice().setScale(0, RoundingMode.FLOOR).intValue();
-            System.out.println("\n\n\nAmount : " + amount+"\n\n\n");
-            long amountInPaise = amount * 100L;
-            paymentLinkRequest.put("amount", amountInPaise);
+
+            // Correct amount conversion to paise (assuming 'order.getTotalDiscountPrice()' returns BigDecimal)
+            BigDecimal totalDiscountPrice = order.getTotalDiscountPrice();
+            int amountInPaise = totalDiscountPrice.movePointRight(2).intValueExact(); // Multiply by 100 to convert to paise
+
+            System.out.println("\n\n\nAmount in Paise: " + amountInPaise + "\n\n\n");
+
+//            if (amountInPaise > 500000) {
+//                throw new RazorpayException("Amount exceeds the maximum allowed limit of INR 5,000.");
+//            }
+            paymentLinkRequest.put("amount",900000 ); // Amount in paise
             paymentLinkRequest.put("accept_partial", false);
-            paymentLinkRequest.put("first_min_partial_amount", amountInPaise);
             paymentLinkRequest.put("currency", "INR");
             paymentLinkRequest.put("notify", notify);
             paymentLinkRequest.put("customer", customer);
-            paymentLinkRequest.put("callback_url", "http://localhost:5173/postordersummary/"+orderId);
+
+            // Callback URL to redirect after payment completion
+            paymentLinkRequest.put("callback_url", "http://localhost:5173/postordersummary/" + orderId);
             paymentLinkRequest.put("callback_method", "get");
 
-            PaymentLink paymentLink = razorpay.paymentLink.create(paymentLinkRequest); //client.create.order(pymntrequest)
+            // Create payment link
+            PaymentLink paymentLink = razorpay.paymentLink.create(paymentLinkRequest);
 
+            // Extract payment link details
             String paymentLinkId = paymentLink.get("id");
             String paymentLinkURL = paymentLink.get("short_url");
 
+            // Prepare the response
             PaymentResponse paymentResponse = new PaymentResponse();
             paymentResponse.setPaymentLinkId(paymentLinkId);
             paymentResponse.setPaymentLinkURL(paymentLinkURL);
-            return new ResponseEntity<PaymentResponse>(paymentResponse, HttpStatus.CREATED); //
+
+            return new ResponseEntity<>(paymentResponse, HttpStatus.CREATED);
 
         } catch (RazorpayException e) {
             throw new RazorpayException(e.getMessage());
@@ -98,65 +115,57 @@ public class PaymentController {
     }
 
 
-    @GetMapping("/payment")
+
+    @GetMapping("/payments")
     @PreAuthorize("hasAuthority('user:create')")
-    public ResponseEntity<ApiResponse> redirect(
+    public ResponseEntity<?> redirect(
             @RequestParam(name = "paymentId")String paymentId,
             @RequestParam(name = "orderId")int orderId) throws OrderException, RazorpayException {
         Order order = orderService.getOrderById(orderId);
-        System.out.println("\nCalled1 Payment id "+paymentId+"\n");
         RazorpayClient razorpay = new RazorpayClient(apiKey,apiSecret);
+        System.out.println("\nCalled1\n");
         try {
             Payment payment = razorpay.payments.fetch(paymentId);
-            //Method card or upi
+            System.out.println("\nCalled2\n");
             String paymentMethod = payment.get("method");
-            System.out.println("\nCalled2 "+paymentMethod+"\n");
-            //Amount
-            Integer amountPaid = (Integer) payment.get("amount");
-            String amountPaidString = String.valueOf(amountPaid);
-            System.out.println("\nCalled3\n" + amountPaidString + "\n");
-            //Created at
-            Date createdAtDate = (Date) payment.get("created_at");
-            LocalDateTime dateTime = createdAtDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            String amountPaid  = payment.get("amount");
+            long createdAt = payment.get("created_at");
+
+            // Convert the Unix timestamp to LocalDateTime
+            LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(createdAt), ZoneId.systemDefault());
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateTime.format(formatter);
-            System.out.println("\nCalled4\n" + formattedDateTime + "\n");
+
 
             if(payment.get("status").equals("captured")) {
-                System.out.println("\nCalled5 "+"captured");
-                System.out.println("\n\nPayment ID : "+paymentId+"\n\n");
+                //System.out.println("\n\nPayment ID : "+paymentId+"\n\n");
+                System.out.println("\nCalled3\n");
                 order.getPaymentDetail().setPaymentId(paymentId);
                 order.getPaymentDetail().setPaymentMethod(paymentMethod);
                 order.getPaymentDetail().setPaymentDateAndTime(formattedDateTime);
-                order.getPaymentDetail().setAmountPaid(amountPaidString);
+                order.getPaymentDetail().setAmountPaid(amountPaid);
                 order.getPaymentDetail().setStatus("COMPLETED");
-                System.out.println("\nPayment Status : "+order.getPaymentDetail().getStatus()+"\n\n");
+               // System.out.println("\n\nPayment Status : "+order.getPaymentDetail().getStatus()+"\n\n");
+
                 List<OrderItem> orderItems = order.getOrderItems();
-                List<OrderItem> updatedOrderItems = new ArrayList<OrderItem>();
 
                 for (OrderItem orderItem : orderItems )
                 {
                     orderItem.setOrderStatus("CONFIRMED");
-//                    System.out.println("\nCalled6666  ");
-                    updatedOrderItems.add(orderItem);
+                    System.out.println("\nCalled4\n");
+                    orderItemRepo.save(orderItem);
                 }
-
-                for (OrderItem updatedItem : updatedOrderItems) {
-                    System.out.println("\nCalled6666");
-                    orderItemRepo.save(updatedItem);  // Save outside the iteration
-                }
-                order.setOrderItems(updatedOrderItems);
+                order.setOrderItems(orderItems);
                 orderRepo.save(order);
             }
             ApiResponse response = new ApiResponse();
             response.setStatus(true);
-            System.out.println("\nCalled8\n");
             response.setMsg("Your order has been placed");
+            System.out.println("\nCalled1\n");
             return new ResponseEntity<ApiResponse>(response,HttpStatus.ACCEPTED);
         }catch (Exception e) {
-            e.printStackTrace();
-            throw new RazorpayException(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-
     }
+
 }

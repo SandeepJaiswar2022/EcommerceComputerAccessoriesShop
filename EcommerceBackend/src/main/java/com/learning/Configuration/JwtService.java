@@ -1,8 +1,6 @@
 package com.learning.Configuration;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,21 +23,32 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
+        System.out.println("\n\nGet Username\n\n");
         return extractClaim(token, Claims::getSubject);
     }
 
     public <T> T extractClaim(String token, Function<Claims,T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
+        System.out.println("\n\nExtract Claims\n\n");
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+//            System.out.println("\n\nExtracting all claims from token\n\n");
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            System.out.println("JWT token has been expired");
+            throw e; // You can rethrow or handle the expired token here
+        } catch (JwtException e) {
+            System.out.println("Invalid JWT token");
+            throw e; // Handle other JWT-related exceptions
+        }
     }
 
     public String generateToken(UserDetails userDetails) {
@@ -59,14 +68,17 @@ public class JwtService {
     }
 
     public Date extractExpiration(String token) {
+        System.out.println("\n\nextractExpiration\n\n");
         return extractClaim(token, Claims::getExpiration);
     }
 
     public boolean isTokenExpired(String token) {
+        System.out.println("\n\nisTokenExpired\n\n");
         return extractExpiration(token).before(new Date());
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
+        System.out.println("\n\nvalidateToken\n\n");
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
