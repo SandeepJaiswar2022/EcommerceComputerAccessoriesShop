@@ -73,3 +73,32 @@
     background-color: red;
     color: white
 }
+
+.radio-tick {
+    appearance: none;
+    height: 15px;
+    width: 15px;
+    /* Tailwind gray-600 */
+    background-color: white;
+    position: relative;
+    display: inline-block;
+    margin-right: 8px;
+    border-radius: .1rem;
+    /* Tailwind spacing mr-2 */
+}
+
+.radio-tick:checked {
+    background-color: #3b82f6;
+}
+
+.radio-tick:checked::before {
+    content: '\2713';
+    /* Unicode for checkmark */
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

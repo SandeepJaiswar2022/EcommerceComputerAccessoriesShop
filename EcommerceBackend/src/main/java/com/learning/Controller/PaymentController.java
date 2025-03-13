@@ -79,7 +79,7 @@ public class PaymentController {
             paymentLinkRequest.put("currency", "INR");
             paymentLinkRequest.put("notify", notify);
             paymentLinkRequest.put("customer", customer);
-            paymentLinkRequest.put("callback_url", "http://localhost:5173/postordersummary/"+orderId);
+            paymentLinkRequest.put("callback_url", "http://localhost:5176/postordersummary/"+orderId);
             paymentLinkRequest.put("callback_method", "get");
 
             PaymentLink paymentLink = razorpay.paymentLink.create(paymentLinkRequest); //client.create.order(pymntrequest)

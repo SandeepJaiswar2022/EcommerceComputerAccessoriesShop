@@ -84,7 +84,7 @@ function AddProduct() {
                             required
                             id='description'
                             name="description"
-                            className="shadow bg-gray-800 border-gray-600 appearance-none border rounded w-full py-2 px-1 text-white"
+                            className="shadow bg-gray-800 border-gray-600 appearance-none border rounded mx-h-40 w-full py-2 px-1 text-white"
                             rows="3"
                         ></textarea>
                     </div>

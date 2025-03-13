@@ -1,10 +1,11 @@
 import { FaChevronDown, FaChevronUp, FaAlignLeft } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { getAllProducts } from '../../State/Product/ProductSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllCategories, getAllProducts } from '../../State/Product/ProductSlice';
 
 
 function Filter({ filterValues }) {
+    const auth = useSelector(state => state.auth);
     const [isOpen, setIsOpen] = useState({
         brands: false,
         availability: false,
@@ -15,14 +16,15 @@ function Filter({ filterValues }) {
     // ₹
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getAllProducts());
-        // console.log("Get All Product Called ");
-    }, [])
+        dispatch(getAllProducts(auth?.role));
+        dispatch(getAllCategories());
+    }, [dispatch, auth.role])
 
     const [selectedPrice, setSelectedPrice] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedAvailability, setSelectedAvailability] = useState([]);
     const [selectedBrands, setSelectedBrands] = useState([]);
+    const categories = useSelector(state => state.product.categories);
 
     useEffect(() => {
         filterValues(selectedBrands, selectedPrice, selectedCategory);
@@ -43,8 +45,11 @@ function Filter({ filterValues }) {
         setSelectedCategory(category);
     };
     const handleAvailabilityChange = (availability) => {
-        setSelectedAvailability(availability);
-        console.log("Availability in filter : ", selectedAvailability);
+        setSelectedAvailability((prevSelected) =>
+            prevSelected.includes(availability)
+                ? prevSelected.filter((item) => item !== availability)
+                : [...prevSelected, availability]
+        );
     };
 
     const handleBrandChange = (brand) => {
@@ -63,13 +68,13 @@ function Filter({ filterValues }) {
 
     return (
         <div className="w-full lg:w-1/4 mt-4 lg:block h-fit hidden custom-color text-white p-6 rounded-lg space-y-6">
-            <h2 className="text-2xl font-bold mb-4 flex items-center">
+            <h2 className="text-xl font-bold mb-0 flex items-center">
                 <FaAlignLeft className="mr-4 text-white" />
                 Filters
             </h2>
-            <div className="border-b border-gray-500 pb-4 mb-4" />
+            <div className="border-b border-gray-500 pb-2" />
 
-            <div className="mb-4 border-b border-gray-500 pb-4">
+            <div className="border-b border-gray-500 pb-2">
                 <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('category')}>
                     <h3 className="text-lg font-semibold flex items-center">
                         Category
@@ -78,19 +83,19 @@ function Filter({ filterValues }) {
                 </div>
                 {isOpen.category && (
                     <div className="space-y-2 mt-2">
-                        {['Laptops', 'Computer Accessories', 'Mobiles', 'Home Appliances'].map(category => (
-                            <label key={category} className="flex items-center cursor-pointer">
+                        {categories.map(item => (
+                            <label key={item?.id} className="flex items-center cursor-pointer">
                                 <input
                                     type="radio"
                                     name="category"
-                                    value={category}
-                                    checked={selectedCategory === category}
-                                    onChange={() => handleCategoryChange(category)}
-                                    className="form-radio h-4 w-4 border-gray-600 text-blue-500 mr-2"
+                                    value={item?.categoryName}
+                                    checked={selectedCategory === item?.categoryName}
+                                    onChange={() => handleCategoryChange(item?.categoryName)}
+                                    className="radio-tick"
                                 />
-                                <span className={selectedCategory === category ? 'text-blue-500 font-semibold ml-2' : 'ml-2'}>
+                                <span className={selectedCategory === item?.categoryName ? 'text-blue-500 font-semibold ml-2' : 'ml-2'}>
 
-                                    {category}
+                                    {item?.categoryName}
                                 </span>
                             </label>
                         ))}
@@ -98,7 +103,7 @@ function Filter({ filterValues }) {
                 )}
             </div>
 
-            <div className="mb-4 border-b border-gray-500 pb-4">
+            <div className="mb-2 border-b border-gray-500 pb-2">
                 <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('price')}>
                     <h3 className="text-lg font-semibold flex items-center">
                         Price
@@ -115,7 +120,7 @@ function Filter({ filterValues }) {
                                     value={price}
                                     checked={selectedPrice === price}
                                     onChange={() => handlePriceChange(price)}
-                                    className="form-radio h-4 w-4 border-gray-600 text-blue-500 mr-2"
+                                    className="radio-tick"
                                 />
                                 <span className={selectedPrice === price ? 'text-blue-500 font-semibold ml-2' : 'ml-2'}>
 
@@ -134,7 +139,7 @@ function Filter({ filterValues }) {
                 )}
             </div>
 
-            <div className="mb-4 border-b border-gray-500 pb-4">
+            <div className="mb-2 border-b border-gray-500 pb-2">
                 <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('brands')}>
                     <h3 className="text-lg font-semibold">
                         Brands
@@ -160,7 +165,7 @@ function Filter({ filterValues }) {
                 )}
             </div>
 
-            <div className="mb-4 border-b border-gray-500 pb-4">
+            <div className="mb-2 border-b border-gray-500 pb-2">
                 <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('availability')}>
                     <h3 className="text-lg font-semibold">
                         Availability
@@ -188,7 +193,7 @@ function Filter({ filterValues }) {
 
             <button
                 onClick={clearFilters}
-                className="bg-red-600 text-white px-4 py-2 hover:bg-red-700 focus:outline-none"
+                className="bg-red-600 text-white font-bold px-4 py-2 hover:bg-red-800 focus:outline-none"
             >
                 Clear Filters
             </button>

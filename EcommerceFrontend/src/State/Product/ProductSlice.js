@@ -21,11 +21,11 @@ export const getProductById = createAsyncThunk("getProductById", async (productI
     }
 });
 
-export const getAllProducts = createAsyncThunk("allproducts", async (_, { rejectWithValue }) => {
+export const getAllProducts = createAsyncThunk("allproducts", async (role, { rejectWithValue }) => {
     try {
         const response = await axios.get(`${BASE_URL}/products`);
         const products = await response.data;
-        return products;
+        return { products: products, role: role };
     } catch (error) {
         console.log("Error : ", error.response);
         if (!error.response) {
@@ -34,6 +34,71 @@ export const getAllProducts = createAsyncThunk("allproducts", async (_, { reject
         return rejectWithValue(error.response.data);
     }
 });
+
+
+export const getAllCategories = createAsyncThunk("getAllCategories", async (_, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/category`);
+        const categories = await response.data;
+        return categories;
+    } catch (error) {
+        console.log("Error : ", error);
+        if (!error.response) {
+            throw error;
+        }
+        return rejectWithValue(error.response.data);
+    }
+});
+
+export const addCategory = createAsyncThunk("addCategory", async (category, { rejectWithValue }) => {
+    try {
+        console.log("Admin : Add category, ", category);
+
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        const response = await axios.post(`${BASE_URL}/admin/category/${category}`,
+            null,
+            {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            });
+        return response.data;
+
+    } catch (error) {
+        console.log("Error : ", error.response);
+        if (!error.response) {
+            throw error;
+        }
+        return rejectWithValue(error.response.data);
+    }
+});
+
+export const deleteCategory = createAsyncThunk("deleteCategory", async (category, { rejectWithValue }) => {
+    try {
+
+        const { id } = category;
+        console.log("Admin : Category Delete, ", id);
+
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        const response = await axios.delete(`${BASE_URL}/admin/category/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`,
+                },
+            });
+        return category;
+
+    } catch (error) {
+        console.log("Error : ", error.response);
+        if (!error.response) {
+            throw error;
+        }
+        return rejectWithValue(error.response.data);
+    }
+});
+
 
 export const updateProduct = createAsyncThunk("updateProduct", async (product, { rejectWithValue }) => {
     try {
@@ -105,6 +170,7 @@ export const deleteProduct = createAsyncThunk("deleteProduct", async (productId,
     }
 });
 
+
 export const Product = createSlice({
     name: `Product`,
     initialState: {
@@ -117,6 +183,7 @@ export const Product = createSlice({
             keyword: ''
         },
         filteredProducts: [],
+        categories: [],
         loading: false,
         error: null,
     },
@@ -171,17 +238,35 @@ export const Product = createSlice({
         builder
             .addCase(getAllProducts.pending, (state) => {
                 state.loading = true;
-                console.log("called getAllProduct");
-
             })
             .addCase(getAllProducts.fulfilled, (state, action) => {
                 state.loading = false;
                 state.product = null;
-                state.products = action.payload;
-                state.filteredProducts = action.payload;
+                if (action.payload.role === "ADMIN") {
+                    state.products = action.payload.products;
+                    state.filteredProducts = action.payload.products;
+                }
+                else {
+                    state.products = action.payload.products.sort(() => Math.random() - 0.5);
+                    state.filteredProducts = action.payload.products.sort(() => Math.random() - 0.5);
+                }
                 state.error = null;
             })
             .addCase(getAllProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.product = null;
+                state.products = [];
+            })
+            .addCase(getAllCategories.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getAllCategories.fulfilled, (state, action) => {
+                state.loading = false;
+                state.categories = action.payload;
+                state.error = null;
+            })
+            .addCase(getAllCategories.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
                 state.product = null;
@@ -220,7 +305,7 @@ export const Product = createSlice({
             .addCase(updateProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-                toast.error("Unable to Update")
+                toast.error("Unable to Update Server Error")
             })
             .addCase(addProduct.pending, (state) => {
                 state.loading = true;
@@ -228,7 +313,7 @@ export const Product = createSlice({
             .addCase(addProduct.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                console.log("Got it in addcase, ", action.payload.id);
+                // console.log("Got it in addcase, ", action.payload.id);
                 state.products.push(action.payload);
                 toast.success('Product Added Successfully');
             })
@@ -236,6 +321,20 @@ export const Product = createSlice({
                 state.loading = false;
                 state.error = action.payload;
                 toast.error("Unable to Add Product Server Error")
+            })
+            .addCase(addCategory.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(addCategory.fulfilled, (state, action) => {
+                state.loading = false;
+                state.error = null;
+                state.categories.push(action.payload);
+                toast.success('Category Added Successfully');
+            })
+            .addCase(addCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                toast.error("Unable to Add Category Server Error")
             })
             .addCase(deleteProduct.pending, (state) => {
                 state.loading = true;
@@ -252,7 +351,22 @@ export const Product = createSlice({
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-                toast.error("Unable to Update")
+                toast.error("Unable to Delete Server Error")
+            })
+            .addCase(deleteCategory.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(deleteCategory.fulfilled, (state, action) => {
+                state.loading = false;
+                state.error = null;
+                state.categories = state.categories.filter(category => category.id !== action.payload.id);
+                state.products = state.products.filter(product => product.category !== action.payload.categoryName);
+                toast.success("Category Deleted Successfully");
+            })
+            .addCase(deleteCategory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                toast.error("Unable to Delete Server Error")
             })
     }
 });

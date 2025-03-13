@@ -26,7 +26,7 @@ function CustomProduct({ product }) {
     }
     return (
         <div className="bg-black cursor-pointer flex-col sm:flex-row p-4 rounded-lg shadow-md group">
-            <div className="w-full h-64 relative overflow-hidden rounded-sm">
+            <div className="w-full h-80 bg-white p-8 relative overflow-hidden rounded-sm">
                 <img onClick={() => goToProductView(product?.id)} src={`/ProductImages/${product?.imageUrl}`} alt="Product Image"
                     className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" />
                 <button onClick={updateCartHandler} className="btn-bg-color btn-bg-color-hover text-white py-2 font-bold w-full absolute bottom-0 left-0 transform translate-y-full transition-transform duration-700 ease-in-out group-hover:translate-y-0">

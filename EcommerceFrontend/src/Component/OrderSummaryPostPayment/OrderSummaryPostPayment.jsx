@@ -24,16 +24,26 @@ const OrderSummaryPostPayment = () => {
         }
 
         const urlParam = new URLSearchParams(window.location.search);
+        console.log("\n\nWhat is payment ID : ", urlParam.get("razorpay_payment_id"));
+
         setPaymentId(urlParam.get("razorpay_payment_id"));
         setPaymentStatus(urlParam.get("razorpay_payment_link_status"));
-        toast.success("Order Booked Successfully post...");
+        // toast.success("Order Booked Successfully");
     }, [navigate]);
 
     useEffect(() => {
-        const data = { orderId, paymentId };
-        dispatch(getOrderByOrderId(orderId));
-        dispatch(updatePayment(data));
-    }, [orderId,paymentId]);
+        if (orderId && paymentId) {
+            const data = { orderId, paymentId };
+            console.log("Called 111111\n");
+
+            dispatch(getOrderByOrderId(orderId));
+            console.log("Bhak payment ID : ", paymentId);
+
+            dispatch(updatePayment(data));
+            localStorage.setItem("paymentUpdated", true);
+            setPaymentId(null);
+        }
+    }, [orderId, paymentId]);
 
     return (
         <div className="container mx-auto p-6 bg-gray-900 min-h-screen text-white">
@@ -56,7 +66,7 @@ const OrderSummaryPostPayment = () => {
             {/* Order Status */}
             <div className="bg-gray-800 shadow-lg rounded-lg p-6 mb-6">
                 <h2 className="text-2xl font-semibold mb-4 text-teal-400">Order Status</h2>
-                <p className="text-lg text-white">Status: <span className="font-medium text-yellow-300">{order?.orderStatus}</span></p>
+                <p className="text-lg text-white">Status: <span className="font-medium text-yellow-300">{order?.paymentDetail?.status}</span></p>
                 <p className="text-lg text-white">Order Date and Time :  <span className="font-medium text-green-400">{order?.orderDate}, {order?.orderTime}</span></p>
                 <p className="text-lg text-white">Expected Delivery: <span className="font-medium text-green-400">August 15, 2024 (Wednesday)</span></p>
             </div>

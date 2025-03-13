@@ -20,6 +20,7 @@ function ViewCart() {
 
     const goToShippingAddress = () => {
         localStorage.setItem('currentStep', '1');
+        localStorage.setItem("paymentUpdated",false);
         navigateTo(`/address`);
     }
 

@@ -52,14 +52,6 @@ function Carousel() {
                                     Shop Now
                                 </Link>
                             </div>
-                            <div className="mt-3 sm:mt-0 sm:ml-3">
-                                <Link
-                                    to={``}
-                                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base rounded-md text-white font-bold bg-indigo-700 hover:bg-indigo-600 md:py-4 md:text-lg md:px-10"
-                                >
-                                    Learn More
-                                </Link>
-                            </div>
                         </div>
                     </div>
                     <div className="mt-10 lg:mt-0 lg:ml-10 lg:w-1/2">

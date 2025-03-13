@@ -3,7 +3,6 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CustomProduct from '../CustomProduct/CustomProduct';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { getAllProducts } from '../../State/Product/ProductSlice';
 
 const responsive = {
@@ -33,7 +32,7 @@ function ProductSlider({ rem, title = `In Offer` }) {
 
     useEffect(() => {
         dispatch(getAllProducts());
-        console.log("Get All Product Called ");
+        // console.log("Get All Product Called ");
     }, [])
     let splittedProducts = [];
     if (rem == 0) {

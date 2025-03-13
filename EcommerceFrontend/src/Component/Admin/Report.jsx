@@ -1,15 +1,7 @@
-import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from '../Sidebar/Sidebar';
-import ProductTable from './ProductTable';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React from "react";
+import Sidebar from "../Sidebar/Sidebar";
 
-
-
-function AllProducts() {
-
+const Report = () => {
     return (
         <>
             {/* <ToastContainer autoClose={1000} /> */}
@@ -22,12 +14,11 @@ function AllProducts() {
 
                 {/* Second Grid (3 columns) */}
                 <div className="col-span-5 text-white text-center grid gap-4">
-                    <p className="font-extrabold text-2xl">All Products</p>
-                    <ProductTable />
+                    <p className="font-extrabold text-2xl">Report</p>
                 </div>
             </div>
         </>
     );
-}
+};
 
-export default AllProducts
+export default Report;

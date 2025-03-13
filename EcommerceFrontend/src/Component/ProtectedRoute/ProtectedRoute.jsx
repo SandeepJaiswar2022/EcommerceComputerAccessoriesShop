@@ -8,11 +8,9 @@ const ProtectedRoute = ({ children }) => {
     if (auth?.role === 'ADMIN') {
         return <Navigate to={`/admin/dashboard`} />
     }
-    if (auth?.jwtToken) {
-        console.log("Role : ", auth?.role);
-
-        return <Navigate to={`/`} />
-    }
+    // if (auth?.jwtToken) {
+    //     return <Navigate to={`/`} />
+    // }
 
 
     return children;

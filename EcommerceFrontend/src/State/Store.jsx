@@ -6,7 +6,6 @@ import { CartItem } from "./CartItem/CartItemSlice";
 import { OrderDetails } from "./OrderDetails/OrderDetailsSlice";
 
 
-
 export const Store = configureStore({
     reducer: {
         auth: UserAuthentication.reducer,
@@ -14,4 +13,4 @@ export const Store = configureStore({
         cartItem: CartItem.reducer,
         orderDetails: OrderDetails.reducer,
     }
-})
+})  
